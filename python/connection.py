@@ -1,6 +1,7 @@
 import bluetooth
 import psycopg2
 from datetime import datetime
+import time
 
 
 def connectionBBDD(data_plantation, data_seed):
@@ -13,14 +14,14 @@ def connectionBBDD(data_plantation, data_seed):
     except:
         print("I am unable to connect to the database")
     try:
-        #cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
+        # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
         cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil,temperature,typeGrow,date,data_raw)  VALUES (%s, %s, %s,%s,%s)",
                        (data_seed["humidity_soil"], data_seed["temperature_soil"], 'Aguacate', datatime_now, str(data_seed)))
     except ValueError:
         print("Error al insertar en seed1")
 
     try:
-        #cur.execute("INSERT INTO ""dataseed1"".""weather"" (id,light,temperature,humidity) values (1,"+data_plantation["light"]+","+data_plantation["temperature_ambient"]+","+data_plantation["humidity_ambient"]+")")
+        # cur.execute("INSERT INTO ""dataseed1"".""weather"" (id,light,temperature,humidity) values (1,"+data_plantation["light"]+","+data_plantation["temperature_ambient"]+","+data_plantation["humidity_ambient"]+")")
         cursor.execute("INSERT INTO ""dataseed1"".""weather"" (humidity,temperature,light,date,data_raw)  VALUES (%s, %s, %s,%s,%s)",
                        (data_plantation["humidity_ambient"], data_plantation["temperature_ambient"], data_plantation["light"], datatime_now, str(data_plantation)))
     except ValueError:
@@ -49,26 +50,45 @@ def data_crawling(data):
     return [data_plantation, data_seed]
 
 
-# Data connection Bluethooth SENSOR 1 HC-05
-bd_addr = "98:D3:31:FD:2C:56"
-port = 1
-sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-sock.connect((bd_addr, port))
-data = ""
-while 1:
-    try:
-        data_raw = sock.recv(1024)
-        data += data_raw.decode("utf-8")
-        data_end = data.find('\n')
-        if data_end != -1:
-            rec = data[:data_end]
-            data1, data2 = data_crawling(data)
-            connectionBBDD(data1, data2)
-            data = data[data_end+1:]
+def connect():
+    while(True):
+        try:
+            sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            sock.connect(('98:D3:31:FD:2C:56', 1))
+            break
+        except bluetooth.btcommon.BluetoothError as error:
+            sock.close()
+            time.sleep(10)
+    return sock
 
-    except KeyboardInterrupt:
-        break
-sock.close()
+# Data connection Bluethooth SENSOR 1 HC-05
+
+
+data = ""
+sock = connect()
+while True:
+    try:
+        sock.send("Connect..")
+        data_raw = sock.recv(1024)
+        data_raw.decode("utf-8")
+        if data_raw.decode("utf-8").find(",") != -1:
+            data += data_raw.decode("utf-8")
+            data_end = data.find('end')
+            if data_end != -1:
+                rec = data[:data_end]
+                data1, data2 = data_crawling(data)
+                connectionBBDD(data1, data2)
+                data1 = ""
+                data2 = ""
+                data = data[data_end+1:]
+        else:
+            print("No hay datos Arduino Sleeping")
+
+    except bluetooth.btcommon.BluetoothError as error:
+        print("Error BluetoothError: " + error)
+        time.sleep(5)
+        sock = connect()
+        pass
 
 
 # Valores del sensor de humedad
