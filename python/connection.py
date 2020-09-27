@@ -34,20 +34,23 @@ def connectionBBDD(data_plantation, data_seed):
 
 def data_crawling(data):
     # H:62.80,T:27.70,L:803,HS:177,TS:25.2
-    data_split = data.split(",")
-    humidity_ambient = data_split[0].split(":")[1]
-    temperature_ambient = data_split[1].split(":")[1]
-    light = data_split[2].split(":")[1]
-    humidity_soil = data_split[3].split(":")[1]
-    temperature_soil = data_split[4].split(":")[1]
-    data_plantation = {
-        "humidity_ambient": humidity_ambient,
-        "temperature_ambient": temperature_ambient,
-        "light": light}
-    data_seed = {
-        "humidity_soil": humidity_soil,
-        "temperature_soil": temperature_soil}
-    return [data_plantation, data_seed]
+    try:
+        data_split = data.split(",")
+        humidity_ambient = data_split[0].split(":")[1]
+        temperature_ambient = data_split[1].split(":")[1]
+        light = data_split[2].split(":")[1]
+        humidity_soil = data_split[3].split(":")[1]
+        temperature_soil = data_split[4].split(":")[1]
+        data_plantation = {
+            "humidity_ambient": humidity_ambient,
+            "temperature_ambient": temperature_ambient,
+            "light": light}
+        data_seed = {
+            "humidity_soil": humidity_soil,
+            "temperature_soil": temperature_soil}
+        return [data_plantation, data_seed]
+    except:
+        print("Error en la lectura de datos")
 
 
 def connect():
@@ -71,18 +74,17 @@ while True:
         sock.send("Connect..")
         data_raw = sock.recv(1024)
         data_raw.decode("utf-8")
-        if data_raw.decode("utf-8").find(",") != -1:
-            data += data_raw.decode("utf-8")
-            data_end = data.find('end')
-            if data_end != -1:
-                rec = data[:data_end]
-                data1, data2 = data_crawling(data)
-                connectionBBDD(data1, data2)
-                data1 = ""
-                data2 = ""
-                data = data[data_end+1:]
+        data += data_raw.decode("utf-8")
+        data_end = data.find('\n')
+        if data_end != -1:
+            rec = data[:data_end]
+            data1, data2 = data_crawling(data)
+            connectionBBDD(data1, data2)
+            data1 = ""
+            data2 = ""
+            data = data[data_end+1:]
         else:
-            print("No hay datos Arduino Sleeping")
+            print("No hay datos Arduino PowerLower")
 
     except bluetooth.btcommon.BluetoothError as error:
         print("Error BluetoothError: " + error)

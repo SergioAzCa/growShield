@@ -1,15 +1,13 @@
 
 
-
-
 //This sketch will use bluetooth to send temperature and humidity
 // to a Raspberry PI using bluetooth
 // Arduino -> bluetooth
 #include <SoftwareSerial.h> //Serial library
 #include <Sleep_n0m1.h>
 #include <DHT.h>
-#define DHTPIN 2  //Where is DHT connected
-#define DHTTYPE DHT22  // Type of sensor used
+#define DHTPIN 2      //Where is DHT connected
+#define DHTTYPE DHT22 // Type of sensor used
 /**
 * Arduino connection HC-05 connection:
 * HC-05  | Arduino
@@ -24,67 +22,77 @@ int sensorSoil = A1;
 int valueLDR = 0;
 int valueSoil = 0;
 
-SoftwareSerial bt (0,1);  //RX, TX (Switched on the Bluetooth – RX -> TX | TX -> RX)
-int btdata; // the data given from the computer
+SoftwareSerial bt(0, 1); //RX, TX (Switched on the Bluetooth – RX -> TX | TX -> RX)
+int btdata;              // the data given from the computer
 DHT dht(DHTPIN, DHTTYPE);
-void setup() {
+void setup()
+{
   bt.begin(9600);
-  sleepTime = 50000; 
+  sleepTime = 50000;
+  //sleepTime = 1800000;
   dht.begin();
-  
 }
 
+void loop()
+{
+  count++;
+  delay(200);
+  int soil = getSoil();
+  int luz = getLight();
+  float hh = getHumid();
+  float tt = getTemp();
+  int ts = getSoilTemperature();
+  //Serial.println(hh);
+  //Serial.println(tt);
+  if (count >= 4)
+  {
+    bt.print("H:" + String(hh) + ",T:" + String(tt) + ",L:" + String(luz) + ",HS:" + String(soil) + ",TS:" + String(ts));
+    bt.print("\n");
+  }
 
-void loop() {
-    count++;
-    delay(200);
-    int soil= getSoil();
-    int luz = getLight();
-    float hh = getHumid();
-    float tt = getTemp();
-    //Serial.println(hh);
-    //Serial.println(tt);
-    if(count >=4)
-        bt.print ("H:"+String(hh) + ",T:" + String(tt)+",L:"+String(luz)+",HS:"+String(soil)+",TS:null,end");
-        bt.print("\n");
-    if(count >= 5)
-    {
-        count = 0;
-        Serial.print("sleeping ");
-        Serial.println(sleepTime); 
-        delay(100); //delay to allow serial to fully print before sleep
-        sleep.standbyMode();
-        //sleep.pwrDownMode(); //set sleep mode
-        sleep.sleepDelay(sleepTime); //sleep for: sleepTime
-    }
-
-   
+  if (count >= 5)
+  {
+    count = 0;
+    Serial.print("sleeping ");
+    Serial.println(sleepTime);
+    delay(100); //delay to allow serial to fully print before sleep
+    //sleep.standbyMode();
+    sleep.pwrDownMode(); //set sleep mode
+    sleep.sleepDelay(sleepTime); //sleep for: sleepTime
+  }
 }
-
-
-
 
 //FUNCTIONS
-float getHumid() {
+float getHumid()
+{
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds ‘old’ (its a very slow sensor)
   delay(200);
   return (float)dht.readHumidity();
 }
-float getTemp() {
+float getTemp()
+{
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds ‘old’ (its a very slow sensor)
   delay(200);
   return (float)dht.readTemperature();
 }
-int getLight(){
+int getLight()
+{
   delay(200);
   valueLDR = analogRead(sensorLDR);
   return valueLDR;
 }
-int getSoil(){
+int getSoil()
+{
   delay(200);
-  valueSoil =  analogRead(sensorSoil);
+  valueSoil = analogRead(sensorSoil);
   return valueSoil;
+}
 
+int getSoilTemperature()
+{
+  delay(200);
+  valueSoil = 0;
+  return valueSoil;
 }
