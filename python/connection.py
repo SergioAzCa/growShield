@@ -2,9 +2,12 @@ import bluetooth
 import psycopg2
 from datetime import datetime
 import time
+import os
+import json
 
 
 def connectionBBDD(data_plantation, data_seed):
+    seedNames_old = {}
     try:
         now = datetime.now()
         datatime_now = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -12,15 +15,29 @@ def connectionBBDD(data_plantation, data_seed):
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
     except:
-        print("I am unable to connect to the database")
+        print("Problema con la conexión de la BBDD")
     try:
         # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
-        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil,temperature,typeGrow,date,data_raw)  VALUES (%s, %s, %s,%s,%s)",
-                       (data_seed["humidity_soil"], data_seed["temperature_soil"], 'Aguacate', datatime_now, str(data_seed)))
+        seedNames = readData()
+        if seedNames["seed1"] != seedNames_old["seedNames"]:
+            cursor.execute("INSERT INTO ""dataseed1"".""typseed"" (1,2,3,4,5,6,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s)",
+                           (seedNames["seed1"], seedNames["seed2"], seedNames["seed3"], seedNames["seed4"], seedNames["seed5"], seedNames["seed4"], datatime_now, str(seedNames)))
+            seedNames_old = seedNames
+            print("Nombres cambiados, los sensores se han renombrado")
+
     except ValueError:
-        print("Error al insertar en seed1")
+        print("Error al insertar en TypeSeed")
 
     try:
+        # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
+        seedNames = readData()
+        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
+                       (data_seed["humidity_soil1"], data_seed["temperature_soil1"], data_seed["temperature_soil2"], data_seed["temperature_soil3"], data_seed["temperature_soil4"], data_seed["temperature_soil5"], datatime_now, str(data_seed)))
+    except ValueError:
+        print("Error al insertar en Seed")
+
+    try:
+
         # cur.execute("INSERT INTO ""dataseed1"".""weather"" (id,light,temperature,humidity) values (1,"+data_plantation["light"]+","+data_plantation["temperature_ambient"]+","+data_plantation["humidity_ambient"]+")")
         cursor.execute("INSERT INTO ""dataseed1"".""weather"" (humidity,temperature,light,date,data_raw)  VALUES (%s, %s, %s,%s,%s)",
                        (data_plantation["humidity_ambient"], data_plantation["temperature_ambient"], data_plantation["light"], datatime_now, str(data_plantation)))
@@ -32,22 +49,37 @@ def connectionBBDD(data_plantation, data_seed):
     print("Insertado con exito a las "+datatime_now+"")
 
 
+def readData():
+    f = open("data.json", "r")
+    data = json.load(f)
+    f.close()
+    return data
+
+
 def data_crawling(data):
-    # H:62.80,T:27.70,L:803,HS:177,TS:25.2
+    # H:52.80,T:26.10,L:73,HS:189,TS1:24.06,TS2:23.94,TS3:24.00,TS4:23.69,TS5:24.06
     try:
         data_split = data.split(",")
         humidity_ambient = data_split[0].split(":")[1]
         temperature_ambient = data_split[1].split(":")[1]
         light = data_split[2].split(":")[1]
-        humidity_soil = data_split[3].split(":")[1]
-        temperature_soil = data_split[4].split(":")[1]
+        humidity_soil1 = data_split[3].split(":")[1]
+        temperature_soil1 = data_split[4].split(":")[1]
+        temperature_soil2 = data_split[5].split(":")[1]
+        temperature_soil3 = data_split[6].split(":")[1]
+        temperature_soil4 = data_split[7].split(":")[1]
+        temperature_soil5 = data_split[8].split(":")[1]
         data_plantation = {
             "humidity_ambient": humidity_ambient,
             "temperature_ambient": temperature_ambient,
             "light": light}
         data_seed = {
-            "humidity_soil": humidity_soil,
-            "temperature_soil": temperature_soil}
+            "humidity_soil1": humidity_soil1,
+            "temperature_soil1": temperature_soil1,
+            "temperature_soil2": temperature_soil2,
+            "temperature_soil3": temperature_soil3,
+            "temperature_soil4": temperature_soil4,
+            "temperature_soil5": temperature_soil5}
         return [data_plantation, data_seed]
     except:
         print("Error en la lectura de datos")
@@ -69,6 +101,8 @@ def connect():
 
 data = ""
 sock = connect()
+pid = os.getpid()
+print(pid)
 while True:
     try:
         sock.send("Connect..")
@@ -84,7 +118,7 @@ while True:
             data2 = ""
             data = data[data_end+1:]
         else:
-            print("No hay datos Arduino PowerLower")
+            print("Recibiendo datos.........Cargando......")
 
     except bluetooth.btcommon.BluetoothError as error:
         print("Error BluetoothError: " + error)
