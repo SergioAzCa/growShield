@@ -7,7 +7,14 @@ import json
 
 
 def connectionBBDD(data_plantation, data_seed):
-    seedNames_old = {}
+    seedNames_old = {
+        "seed1": "",
+        "seed2": "",
+        "seed3": "",
+        "seed4": "",
+        "seed5": "",
+        "seed6": ""
+    }
     try:
         now = datetime.now()
         datatime_now = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -19,9 +26,9 @@ def connectionBBDD(data_plantation, data_seed):
     try:
         # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
         seedNames = readData()
-        if seedNames["seed1"] != seedNames_old["seedNames"]:
-            cursor.execute("INSERT INTO ""dataseed1"".""typseed"" (1,2,3,4,5,6,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s)",
-                           (seedNames["seed1"], seedNames["seed2"], seedNames["seed3"], seedNames["seed4"], seedNames["seed5"], seedNames["seed4"], datatime_now, str(seedNames)))
+        if seedNames["seed1"] != seedNames_old["seed1"]:
+            cursor.execute("INSERT INTO ""dataseed1"".""typseed"" (seed1,seed2,seed3,seed4,seed5,seed6,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
+                           (str(seedNames["seed1"]), str(seedNames["seed2"]), str(seedNames["seed3"]), str(seedNames["seed4"]), str(seedNames["seed5"]), str(seedNames["seed6"]), datatime_now, str(seedNames)))
             seedNames_old = seedNames
             print("Nombres cambiados, los sensores se han renombrado")
 
@@ -30,7 +37,6 @@ def connectionBBDD(data_plantation, data_seed):
 
     try:
         # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
-        seedNames = readData()
         cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
                        (data_seed["humidity_soil1"], data_seed["temperature_soil1"], data_seed["temperature_soil2"], data_seed["temperature_soil3"], data_seed["temperature_soil4"], data_seed["temperature_soil5"], datatime_now, str(data_seed)))
     except ValueError:

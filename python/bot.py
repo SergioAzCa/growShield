@@ -63,64 +63,235 @@ def query_handler(call):
     bot.answer_callback_query(
         callback_query_id=call.id, text='Preguntado a la Planta!')
     answer = 'FRACASO!'
-    if call.data == 'HumidityWysteria':
+    if call.data == 'seed1':
+        keyboard1 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad1")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura1")
+        keyboard1.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard1)
+    if call.data == 'Temperatura1':
         conn = psycopg2.connect(
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT soil FROM ""dataseed1"".""seed"" WHERE typegrow = 'Bonasi1' ORDER BY date DESC LIMIT 1")
+            "SELECT temperature1 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
         conn.close()
-        bot.send_message(call.message.chat.id, data)
+        answer = "La temperatura es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
-    if call.data == 'HumidityWysteriaJoven':
+    if call.data == 'Humedad1':
         conn = psycopg2.connect(
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT soil FROM ""dataseed1"".""seed"" WHERE typegrow = 'Bonsai2' ORDER BY date DESC LIMIT 1")
+            "SELECT soil1 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
         conn.close()
-        bot.send_message(call.message.chat.id, data)
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
-    if call.data == 'HumidityAguacate':
+    if call.data == 'seed2':
+        keyboard2 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad2")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura2")
+        keyboard2.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard2)
+    if call.data == 'Temperatura2':
         conn = psycopg2.connect(
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT soil FROM ""dataseed1"".""seed"" WHERE typegrow = 'Aguacate' ORDER BY date DESC LIMIT 1 ")
+            "SELECT temperature2 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
         conn.close()
-        bot.send_message(call.message.chat.id, data)
+        answer = "La temperatura es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
-    if call.data == 'Tierra':
+    if call.data == 'Humedad2':
         conn = psycopg2.connect(
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT soil FROM ""dataseed1"".""seed"" WHERE typegrow = 'Aguacate2' ORDER BY date DESC LIMIT 1 ")
+            "SELECT soil2 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
         conn.close()
-        bot.send_message(call.message.chat.id, data)
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'seed3':
+        keyboard3 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad3")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura3")
+        keyboard3.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard3)
+    if call.data == 'Temperatura3':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT temperature3 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La temperatura es de : "+str(data[0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'Humedad3':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT soil3 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'seed4':
+        keyboard4 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad4")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura4")
+        keyboard4.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard4)
+    if call.data == 'Temperatura4':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT temperature4 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La temperatura es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'Humedad4':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT soil4 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'seed5':
+        keyboard5 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad5")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura5")
+        keyboard5.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard5)
+    if call.data == 'Temperatura5':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT temperature5 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La temperatura es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'Humedad5':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT soil5 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'seed6':
+        keyboard6 = telebot.types.InlineKeyboardMarkup(row_width=1)
+        a = telebot.types.InlineKeyboardButton(
+            text="Humedad", callback_data="Humedad1")
+        b = telebot.types.InlineKeyboardButton(
+            text="Temperatura", callback_data="Temperatura1")
+        keyboard6.add(a, b)
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard6)
+    if call.data == 'Temperatura6':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT temperature6 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La temperatura es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+    if call.data == 'Humedad6':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT soil16FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "La humedad es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
+
     if call.data == '3':
         conn = psycopg2.connect(
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT light FROM ""dataseed1"".""weather""  ORDER BY date DESC LIMIT 1")
+            "SELECT light FROM ""dataseed1"".""weather""  ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
@@ -134,7 +305,7 @@ def query_handler(call):
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT temperature FROM ""dataseed1"".""weather"" ORDER BY date DESC LIMIT 1")
+            "SELECT temperature FROM ""dataseed1"".""weather"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()
@@ -160,16 +331,16 @@ def query_handler(call):
     elif call.data == '6':
         keyboardH = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
-            text="Wysteria", callback_data="HumidityWysteria")
+            text="Wysteria", callback_data="seed1")
         b = telebot.types.InlineKeyboardButton(
-            text="Wysteria Joven", callback_data="HumidityWysteriaJoven")
+            text="Wysteria Joven", callback_data="seed2")
         c = telebot.types.InlineKeyboardButton(
-            text="Aguacate", callback_data="HumidityAguacate")
+            text="Aguacate", callback_data="seed3")
         d = telebot.types.InlineKeyboardButton(
-            text="Tierra ", callback_data="Tierra")
+            text="Tierra ", callback_data="seed4")
         keyboardH.add(a, b, c, d)
         bot.edit_message_text(chat_id=call.message.chat.id,
-                              message_id=call.message.message_id, text="La Humedad es de:", reply_markup=keyboardH)
+                              message_id=call.message.message_id, text="Los datos son:", reply_markup=keyboardH)
 
 
 while True:
