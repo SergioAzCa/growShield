@@ -276,7 +276,7 @@ def query_handler(call):
             "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT soil16FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
+            "SELECT soil16 FROM ""dataseed1"".""seed"" ORDER BY id DESC LIMIT 1 ")
         conn.commit()
         data = cursor.fetchall()
         cursor.close()

@@ -37,8 +37,8 @@ def connectionBBDD(data_plantation, data_seed):
 
     try:
         # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
-        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
-                       (data_seed["humidity_soil1"], data_seed["temperature_soil1"], data_seed["temperature_soil2"], data_seed["temperature_soil3"], data_seed["temperature_soil4"], data_seed["temperature_soil5"], datatime_now, str(data_seed)))
+        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,soil2,soil3,soil4,soil5,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
+                       (data_seed["humidity_soil1"], data_seed["humidity_soil2"], data_seed["humidity_soil3"], data_seed["humidity_soil4"], data_seed["humidity_soil5"], data_seed["temperature_soil1"], data_seed["temperature_soil2"], data_seed["temperature_soil3"], data_seed["temperature_soil4"], data_seed["temperature_soil5"], datatime_now, str(data_seed)))
     except ValueError:
         print("Error al insertar en Seed")
 
@@ -62,30 +62,61 @@ def readData():
     return data
 
 
+def waterPump(soil):
+    WaterValue = 259
+    AirValue = 595
+    ntervals = (AirValue - WaterValue)/3
+
+    if(soil > WaterValue and soil < (WaterValue + intervals))
+    {
+        Serial.println("Very Wet")
+    }
+    else if(soi > (WaterValue + intervals) and soil < (AirValue - intervals))
+    {
+        Serial.println("Wet")
+    }
+    else if(soil < AirValue and soil > (AirValue - intervals))
+    {
+        Serial.println("Dry")
+    }
+
+
 def data_crawling(data):
-    # H:52.80,T:26.10,L:73,HS:189,TS1:24.06,TS2:23.94,TS3:24.00,TS4:23.69,TS5:24.06
+    # H:52.80,T:26.10,L:73,HS1:189,HS2:189,HS3:189,HS4:189,HS5:189,TS1:24.06,TS2:23.94,TS3:24.00,TS4:23.69,TS5:24.06
     try:
         data_split = data.split(",")
         humidity_ambient = data_split[0].split(":")[1]
         temperature_ambient = data_split[1].split(":")[1]
         light = data_split[2].split(":")[1]
         humidity_soil1 = data_split[3].split(":")[1]
-        temperature_soil1 = data_split[4].split(":")[1]
-        temperature_soil2 = data_split[5].split(":")[1]
-        temperature_soil3 = data_split[6].split(":")[1]
-        temperature_soil4 = data_split[7].split(":")[1]
-        temperature_soil5 = data_split[8].split(":")[1]
+        humidity_soil2 = data_split[4].split(":")[1]
+        humidity_soil3 = data_split[5].split(":")[1]
+        humidity_soil4 = data_split[6].split(":")[1]
+        humidity_soil5 = data_split[7].split(":")[1]
+        temperature_soil1 = data_split[8].split(":")[1]
+        temperature_soil2 = data_split[9].split(":")[1]
+        temperature_soil3 = data_split[10].split(":")[1]
+        temperature_soil4 = data_split[11].split(":")[1]
+        temperature_soil5 = data_split[12].split(":")[1]
         data_plantation = {
             "humidity_ambient": humidity_ambient,
             "temperature_ambient": temperature_ambient,
             "light": light}
         data_seed = {
             "humidity_soil1": humidity_soil1,
+            "humidity_soil2": humidity_soil2,
+            "humidity_soil3": humidity_soil3,
+            "humidity_soil4": humidity_soil4,
+            "humidity_soil5": humidity_soil5,
             "temperature_soil1": temperature_soil1,
             "temperature_soil2": temperature_soil2,
             "temperature_soil3": temperature_soil3,
             "temperature_soil4": temperature_soil4,
             "temperature_soil5": temperature_soil5}
+        # or int(humidity_soil2) < 40 or int(humidity_soil3) < 40 or int(humidity_soil4) < 40 or int(humidity_soil5) < 40:
+        # if int(humidity_soil1) < 40:
+        #     # Envio de datos para conectar la bomba al arduino
+        #     sock.send("2".encode())
         return [data_plantation, data_seed]
     except:
         print("Error en la lectura de datos")
@@ -113,6 +144,8 @@ while True:
     try:
         sock.send("Connect..")
         data_raw = sock.recv(1024)
+        print(data_raw)
+        # sock.write()
         data_raw.decode("utf-8")
         data += data_raw.decode("utf-8")
         data_end = data.find('\n')
