@@ -36,8 +36,12 @@ def connectionBBDD(data_plantation, data_seed):
         print("Error al insertar en TypeSeed")
 
     try:
-        # cur.execute("INSERT INTO ""dataseed1"".""seed1"" (soil,temperature,id,type) values ("+data_seed["humidity_soil"]+",'0',1,'Aguacate')")
-        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,soil2,soil3,soil4,soil5,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s)",
+        state(seedNames, data_seed, datatime_now, cursor)
+    except ValueError:
+        print("Error al insertar en State")
+
+    try:
+        cursor.execute("INSERT INTO ""dataseed1"".""seed"" (soil1,soil2,soil3,soil4,soil5,temperature1,temperature2,temperature3,temperature4,temperature5,date,data_raw)  VALUES (%s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                        (data_seed["humidity_soil1"], data_seed["humidity_soil2"], data_seed["humidity_soil3"], data_seed["humidity_soil4"], data_seed["humidity_soil5"], data_seed["temperature_soil1"], data_seed["temperature_soil2"], data_seed["temperature_soil3"], data_seed["temperature_soil4"], data_seed["temperature_soil5"], datatime_now, str(data_seed)))
     except ValueError:
         print("Error al insertar en Seed")
@@ -62,27 +66,55 @@ def readData():
     return data
 
 
+def state(seedNames, data_seed, datatime_now, cursor):
+
+    estado = waterPump(data_seed["humidity_soil1"])
+    cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
+                   (str(seedNames["seed1"]), estado, datatime_now, data_seed["humidity_soil1"]))
+
+    estado = waterPump(data_seed["humidity_soil2"])
+    cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
+                   (str(seedNames["seed2"]), estado, datatime_now, data_seed["humidity_soil2"]))
+
+    estado = waterPump(data_seed["humidity_soil3"])
+    cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
+                   (str(seedNames["seed3"]), estado, datatime_now, data_seed["humidity_soil3"]))
+
+    estado = waterPump(data_seed["humidity_soil4"])
+    cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
+                   (str(seedNames["seed4"]), estado, datatime_now, data_seed["humidity_soil4"]))
+
+    estado = waterPump(data_seed["humidity_soil5"])
+    cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
+                   (str(seedNames["seed5"]), estado, datatime_now, data_seed["humidity_soil5"]))
+
+
 def waterPump(soil):
     WaterValue = 259
     AirValue = 595
-    ntervals = (AirValue - WaterValue)/3
+    intervals = (AirValue - WaterValue)/3
+    estado = "sin dato"
 
-    if(soil > WaterValue and soil < (WaterValue + intervals))
-    {
-        Serial.println("Very Wet")
-    }
-    else if(soi > (WaterValue + intervals) and soil < (AirValue - intervals))
-    {
-        Serial.println("Wet")
-    }
-    else if(soil < AirValue and soil > (AirValue - intervals))
-    {
-        Serial.println("Dry")
-    }
+    if((int(soil) > WaterValue and int(soil) < (WaterValue + intervals))):
+        print("Muy Mojado")
+        estado = "Muy Mojado"
+
+    elif((int(soil) > (WaterValue + intervals) and int(soil) < (AirValue - intervals))):
+        print("Mojado")
+        estado = "Mojado"
+
+    elif((int(soil) < AirValue and int(soil) > (AirValue - intervals))):
+        print("Seco")
+        estado = "Seco"
+    else:
+        estado = "Ni el desierto..."
+
+    return estado
 
 
 def data_crawling(data):
     # H:52.80,T:26.10,L:73,HS1:189,HS2:189,HS3:189,HS4:189,HS5:189,TS1:24.06,TS2:23.94,TS3:24.00,TS4:23.69,TS5:24.06
+    # H:53.60,T:21.80,L:95,HS1:687,HS2:682,HS3:683,HS4:683,HS5:684,TS1:20.06,TS2:20.25,TS3:20.13,TS4:20.19,TS5:20.31
     try:
         data_split = data.split(",")
         humidity_ambient = data_split[0].split(":")[1]
@@ -98,10 +130,12 @@ def data_crawling(data):
         temperature_soil3 = data_split[10].split(":")[1]
         temperature_soil4 = data_split[11].split(":")[1]
         temperature_soil5 = data_split[12].split(":")[1]
+
         data_plantation = {
             "humidity_ambient": humidity_ambient,
             "temperature_ambient": temperature_ambient,
             "light": light}
+
         data_seed = {
             "humidity_soil1": humidity_soil1,
             "humidity_soil2": humidity_soil2,
@@ -113,10 +147,7 @@ def data_crawling(data):
             "temperature_soil3": temperature_soil3,
             "temperature_soil4": temperature_soil4,
             "temperature_soil5": temperature_soil5}
-        # or int(humidity_soil2) < 40 or int(humidity_soil3) < 40 or int(humidity_soil4) < 40 or int(humidity_soil5) < 40:
-        # if int(humidity_soil1) < 40:
-        #     # Envio de datos para conectar la bomba al arduino
-        #     sock.send("2".encode())
+
         return [data_plantation, data_seed]
     except:
         print("Error en la lectura de datos")

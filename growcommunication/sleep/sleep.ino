@@ -42,3 +42,7 @@ void doBlink() {
   delay(10);
   digitalWrite(ledPin, LOW);
 }
+
+
+//Dry 595
+//Water 259 
