@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h> //Serial library
-#include <LowPower.h>
-//#include <Sleep_n0m1.h>
+//#include <LowPower.h>
+#include <Sleep_n0m1.h>
 #include <DHT.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -15,7 +15,7 @@
 int count = 0;
 int ledInterno = 13;
 const int pin = 9; //Bomba
-//Sleep sleep;
+Sleep sleep;
 //unsigned long sleepTime; //how long you want the arduino to sleep
 int sensorLDR = A0;
 int sensorSoil1 = A1;
@@ -38,6 +38,7 @@ DallasTemperature sensors5(&ourWire5);
 
 SoftwareSerial bt(0, 1); //RX, TX (Switched on the Bluetooth – RX -> TX | TX -> RX)
 int btdata;              // the data given from the computer
+unsigned long sleepTime;
 DHT dht(DHTPIN, DHTTYPE);
 void setup()
 {
@@ -50,7 +51,7 @@ void setup()
   bt.begin(9600);
   dht.begin();
   //sleepTime = 500;
-  //sleepTime = 1800000;
+  sleepTime = 1800000;
 }
 
 void loop()
@@ -92,13 +93,13 @@ void loop()
     count = 0;
     //delay(100); //delay to allow serial to fully print before sleep
     //sleep.standbyMode();
-    //sleep.pwrDownMode();         //set sleep mode
-    //sleep.sleepDelay(sleepTime); //sleep for: sleepTime 113
-    for (int sleepCounter = 113; sleepCounter > 0; sleepCounter--)
-    {
-      LowPower.idle(SLEEP_8S,ADC_ON, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_OFF, TWI_OFF);
-      LowPower.powerDown(SLEEP_8S,ADC_ON, BOD_OFF);
-    }
+    sleep.pwrDownMode();         //set sleep mode
+    sleep.sleepDelay(sleepTime); //sleep for: sleepTime
+    //    for (int sleepCounter = 113; sleepCounter > 0; sleepCounter--)
+    //    {
+    //      LowPower.idle(SLEEP_8S,ADC_ON, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_OFF, TWI_OFF);
+    //      LowPower.powerDown(SLEEP_8S,ADC_ON, BOD_OFF);
+    //    }
   }
   count++;
 }
@@ -126,7 +127,7 @@ int getLight()
 }
 int getSoil1()
 {
-  delay(200);
+  delay(2000);
   int valueSoil1 = analogRead(sensorSoil1);
   pumpWater(valueSoil1);
   return valueSoil1;

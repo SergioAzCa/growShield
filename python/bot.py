@@ -69,7 +69,9 @@ def query_handler(call):
             text="Humedad", callback_data="Humedad1")
         b = telebot.types.InlineKeyboardButton(
             text="Temperatura", callback_data="Temperatura1")
-        keyboard1.add(a, b)
+        c = telebot.types.InlineKeyboardButton(
+            text="Estado", callback_data="Estado1")
+        keyboard1.add(a, b, c)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard1)
     if call.data == 'Temperatura1':
@@ -100,13 +102,29 @@ def query_handler(call):
         bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'Estado1':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT state FROM ""dataseed1"".""states"" WHERE typegrow = 'WysteriaJoven' ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "El Estado es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
     if call.data == 'seed2':
         keyboard2 = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
             text="Humedad", callback_data="Humedad2")
         b = telebot.types.InlineKeyboardButton(
             text="Temperatura", callback_data="Temperatura2")
-        keyboard2.add(a, b)
+        c = telebot.types.InlineKeyboardButton(
+            text="Estado", callback_data="Estado2")
+        keyboard2.add(a, b, c)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard2)
     if call.data == 'Temperatura2':
@@ -137,13 +155,29 @@ def query_handler(call):
         bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'Estado2':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT state FROM ""dataseed1"".""states"" WHERE typegrow = 'Wysteria' ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "El Estado es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
     if call.data == 'seed3':
         keyboard3 = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
             text="Humedad", callback_data="Humedad3")
         b = telebot.types.InlineKeyboardButton(
             text="Temperatura", callback_data="Temperatura3")
-        keyboard3.add(a, b)
+        c = telebot.types.InlineKeyboardButton(
+            text="Estado", callback_data="Estado3")
+        keyboard3.add(a, b, c)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard3)
     if call.data == 'Temperatura3':
@@ -174,13 +208,29 @@ def query_handler(call):
         bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'Estado3':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT state FROM ""dataseed1"".""states"" WHERE typegrow = 'Aguacate' ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "El Estado es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
     if call.data == 'seed4':
         keyboard4 = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
             text="Humedad", callback_data="Humedad4")
         b = telebot.types.InlineKeyboardButton(
             text="Temperatura", callback_data="Temperatura4")
-        keyboard4.add(a, b)
+        c = telebot.types.InlineKeyboardButton(
+            text="Estado", callback_data="Estado4")
+        keyboard4.add(a, b, c)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard4)
     if call.data == 'Temperatura4':
@@ -211,13 +261,29 @@ def query_handler(call):
         bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'Estado4':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT state FROM ""dataseed1"".""states"" WHERE typegrow = 'Tierra' ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "El Estado es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
     if call.data == 'seed5':
         keyboard5 = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
             text="Humedad", callback_data="Humedad5")
         b = telebot.types.InlineKeyboardButton(
             text="Temperatura", callback_data="Temperatura5")
-        keyboard5.add(a, b)
+        c = telebot.types.InlineKeyboardButton(
+            text="Estado", callback_data="Estado5")
+        keyboard5.add(a, b, c)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard5)
     if call.data == 'Temperatura5':
@@ -248,12 +314,26 @@ def query_handler(call):
         bot.send_message(call.message.chat.id, answer)
         bot.edit_message_reply_markup(
             call.message.chat.id, call.message.message_id)
+    if call.data == 'Estado5':
+        conn = psycopg2.connect(
+            "dbname='growshield' user='pi' host='127.0.0.1' password='postgres'")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT state FROM ""dataseed1"".""states"" WHERE typegrow = 'Tierra' ORDER BY id DESC LIMIT 1 ")
+        conn.commit()
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        answer = "El Estado es de : "+str(data[0][0])
+        bot.send_message(call.message.chat.id, answer)
+        bot.edit_message_reply_markup(
+            call.message.chat.id, call.message.message_id)
     if call.data == 'seed6':
         keyboard6 = telebot.types.InlineKeyboardMarkup(row_width=1)
         a = telebot.types.InlineKeyboardButton(
-            text="Humedad", callback_data="Humedad1")
+            text="Humedad", callback_data="Humedad6")
         b = telebot.types.InlineKeyboardButton(
-            text="Temperatura", callback_data="Temperatura1")
+            text="Temperatura", callback_data="Temperatura6")
         keyboard6.add(a, b)
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id, text="Los datos del Bonsai son:", reply_markup=keyboard6)

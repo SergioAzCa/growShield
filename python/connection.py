@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 import os
 import json
+from soilMoisture import waterPump
 
 
 def connectionBBDD(data_plantation, data_seed):
@@ -68,48 +69,25 @@ def readData():
 
 def state(seedNames, data_seed, datatime_now, cursor):
 
-    estado = waterPump(data_seed["humidity_soil1"])
+    estado = waterPump(data_seed["humidity_soil1"], "soil1")
     cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
                    (str(seedNames["seed1"]), estado, datatime_now, data_seed["humidity_soil1"]))
 
-    estado = waterPump(data_seed["humidity_soil2"])
+    estado = waterPump(data_seed["humidity_soil2"], "soil2")
     cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
                    (str(seedNames["seed2"]), estado, datatime_now, data_seed["humidity_soil2"]))
 
-    estado = waterPump(data_seed["humidity_soil3"])
+    estado = waterPump(data_seed["humidity_soil3"], "soil3")
     cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
                    (str(seedNames["seed3"]), estado, datatime_now, data_seed["humidity_soil3"]))
 
-    estado = waterPump(data_seed["humidity_soil4"])
+    estado = waterPump(data_seed["humidity_soil4"], "soil4")
     cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
                    (str(seedNames["seed4"]), estado, datatime_now, data_seed["humidity_soil4"]))
 
-    estado = waterPump(data_seed["humidity_soil5"])
+    estado = waterPump(data_seed["humidity_soil5"], "soil5")
     cursor.execute("INSERT INTO ""dataseed1"".""states"" (typegrow,state,date,humidity)  VALUES (%s, %s, %s, %s)",
                    (str(seedNames["seed5"]), estado, datatime_now, data_seed["humidity_soil5"]))
-
-
-def waterPump(soil):
-    WaterValue = 259
-    AirValue = 595
-    intervals = (AirValue - WaterValue)/3
-    estado = "sin dato"
-
-    if((int(soil) > WaterValue and int(soil) < (WaterValue + intervals))):
-        print("Muy Mojado")
-        estado = "Muy Mojado"
-
-    elif((int(soil) > (WaterValue + intervals) and int(soil) < (AirValue - intervals))):
-        print("Mojado")
-        estado = "Mojado"
-
-    elif((int(soil) < AirValue and int(soil) > (AirValue - intervals))):
-        print("Seco")
-        estado = "Seco"
-    else:
-        estado = "Ni el desierto..."
-
-    return estado
 
 
 def data_crawling(data):
